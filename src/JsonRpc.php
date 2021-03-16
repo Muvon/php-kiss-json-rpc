@@ -45,7 +45,7 @@ final class JsonRpc {
       return [$response['error'], null];
     }
 
-    return $response['result'];
+    return [null, $response['result']];
   }
 
   /**
