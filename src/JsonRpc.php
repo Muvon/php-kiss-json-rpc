@@ -9,7 +9,7 @@ final class JsonRpc {
   /**
    * @see self::__construct
    */
-  public function create(array ...$args): self {
+  public static function create(array ...$args): self {
     return new self(...$args);
   }
 
