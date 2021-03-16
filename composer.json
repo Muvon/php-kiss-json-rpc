@@ -1,8 +1,32 @@
 {
-    "require-dev": {
-        "phpunit/phpunit": "^9.5"
-    },
-    "require": {
-        "muvon/kiss-request-trait": "^0.1"
+  "name": "muvon/kiss-json-rpc",
+  "description": "KISS implementation of JSON RPC client",
+  "keywords": [
+    "json",
+    "rpc",
+    "json-rpc",
+    "http",
+    "request",
+    "curl"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Muvon Co. Ltd",
+      "email": "contact@muvon.io"
     }
+  ],
+  "minimum-stability": "dev",
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  },
+  "require": {
+    "muvon/kiss-request-trait": "^0.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Muvon\\KISS\\": "src/"
+    }
+  }
 }
