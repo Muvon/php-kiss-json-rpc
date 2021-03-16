@@ -15,7 +15,7 @@ final class JsonRpc {
 
   /**
    * Make RPC call with preferred method and params
-   * 
+   *
    * @param string $method
    * @param array $params
    * @return array [err, result]
@@ -46,5 +46,26 @@ final class JsonRpc {
     }
 
     return $response['result'];
+  }
+
+  /**
+   * This methods make available to call RPC with camel case
+   * You can use underscore notation also
+   *
+   * @param string $name
+   * @param array $args
+   * @return array Same as call method
+   * @see self::call
+   */
+  public function __call(string $name, array $args): array {
+    if (!str_contains($name, '_')) {
+      $name = preg_replace(
+        '/(^|[a-z])([A-Z])/e',
+        'strtolower(strlen("\\1") ? "\\1_\\2" : "\\2")',
+        $name
+      );
+    }
+
+    return $this->call($name, $args);
   }
 }
