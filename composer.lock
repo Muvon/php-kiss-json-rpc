@@ -4,8 +4,57 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d04a6a4216eec9684d7a430e94632a78",
-    "packages": [],
+    "content-hash": "f8cfcd419342adbcd0f954208f66ea99",
+    "packages": [
+        {
+            "name": "muvon/kiss-request-trait",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Muvon/php-kiss-request-trait.git",
+                "reference": "c1bea19e93888c51ca8a7463563d1e17219c9dc4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Muvon/php-kiss-request-trait/zipball/c1bea19e93888c51ca8a7463563d1e17219c9dc4",
+                "reference": "c1bea19e93888c51ca8a7463563d1e17219c9dc4",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Muvon\\KISS\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Muvon Co. Ltd",
+                    "email": "contact@muvon.io"
+                }
+            ],
+            "description": "KISS implementation of RequestTrait with usage of CURL",
+            "keywords": [
+                "curl",
+                "http",
+                "json",
+                "kiss",
+                "request",
+                "trait"
+            ],
+            "support": {
+                "issues": "https://github.com/Muvon/php-kiss-request-trait/issues",
+                "source": "https://github.com/Muvon/php-kiss-request-trait/tree/0.1.0"
+            },
+            "time": "2021-03-14T11:52:33+00:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
