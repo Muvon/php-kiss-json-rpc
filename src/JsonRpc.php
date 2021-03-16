@@ -59,11 +59,7 @@ final class JsonRpc {
    */
   public function __call(string $name, array $args): array {
     if (!str_contains($name, '_')) {
-      $name = preg_replace(
-        '/(^|[a-z])([A-Z])/e',
-        'strtolower(strlen("\\1") ? "\\1_\\2" : "\\2")',
-        $name
-      );
+      $name = implode('_', array_map('strtolower', preg_split('/(?=[A-Z])/', $name)));
     }
 
     return $this->call($name, $args);
