@@ -5,7 +5,7 @@ use Closure;
 
 final class JsonRpc {
   use RequestTrait;
-  protected Closure $check_result_fn;
+  protected ?Closure $check_result_fn = null;
 
   final protected function __construct(protected string $url, protected ?string $user, protected ?string $password) {}
 
@@ -61,7 +61,11 @@ final class JsonRpc {
       return ['e_response_error', null];
     }
 
-    if (isset($this->check_result_fn) && ($err = $this->check_result_fn($response['result']))) {
+    // Looks like PHP 8.0.3 has bug
+    // When we call property directly it use __call method and recursion
+    // So to workaround it we do reassign Closure and call it
+    $fn = $this->check_result_fn;
+    if ($fn && ($err = $fn($response['result']))) {
       return [$err, null];
     }
 
