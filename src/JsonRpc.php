@@ -38,8 +38,10 @@ final class JsonRpc {
    */
   public function call(string $method, array $params): array {
     if ($this->user && $this->password) {
-      $params['username'] = $this->user;
-      $params['password'] = $this->password;
+      $params[0] = array_merge($params[0] ?? [], [
+        'username' => $this->username,
+        'password' => $this->password,
+      ]);
     }
 
     [$err, $response] = $this->request(
