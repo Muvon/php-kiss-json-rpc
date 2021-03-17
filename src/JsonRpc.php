@@ -79,10 +79,6 @@ final class JsonRpc {
    * @see self::call
    */
   public function __call(string $name, array $args): array {
-    if (!str_contains($name, '_')) {
-      $name = implode('_', array_map('strtolower', preg_split('/(?=[A-Z])/', $name)));
-    }
-
     return $this->call($name, $args);
   }
 }
