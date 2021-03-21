@@ -2,6 +2,7 @@
 namespace Muvon\KISS;
 
 use Closure;
+use Exception;
 
 final class JsonRpc {
   use RequestTrait;
@@ -37,21 +38,7 @@ final class JsonRpc {
    * @return array [err, result]
    */
   public function call(string $method, array $params): array {
-    $headers = [];
-    if ($this->user && $this->password) {
-      $headers[] = 'Authorization: Basic ' . base64_encode($this->user . ':' . $this->password);
-    }
-
-    [$err, $response] = $this->request(
-      $this->url,
-      [
-        'jsonrpc' => '2.0',
-        'method' => $method,
-        'params' => $params ?: null
-      ],
-      'POST',
-      $headers
-    );
+    [$err, $response] = $this->doRequest($method, $params);
 
     if ($err) {
       return ['e_request_failed', null];
@@ -75,6 +62,33 @@ final class JsonRpc {
   }
 
   /**
+   * Do multiple request with async
+   *
+   * @param array $cmds list of commands that applyes to default call method
+   * @return array [err, result] where result is array of all data for all requests
+   */
+  public function callMulti(array $cmds): array {
+    $this->multi();
+    foreach ($cmds as $cmd) {
+      $this->doRequest(...$cmd);
+    }
+    try {
+      $fn = $this->check_result_fn;
+      $result = [];
+      foreach ($this->exec() as $response) {
+        if ($fn && ($err = $fn($response['result']))) {
+          throw new Exception('Result checkFn failed with error: ' . $err);
+        }
+        $result[] = $response['result'];
+      }
+
+      return [null, $result];
+    } catch (Exception $e) {
+      return ['e_request_failed', null];
+    }
+  }
+
+  /**
    * This methods make available to call RPC with camel case
    * You can use underscore notation also
    *
@@ -85,5 +99,22 @@ final class JsonRpc {
    */
   public function __call(string $name, array $args): array {
     return $this->call($name, $args);
+  }
+
+  protected function doRequest(string $method, array $params): self|array {
+    $headers = [];
+    if ($this->user && $this->password) {
+      $headers[] = 'Authorization: Basic ' . base64_encode($this->user . ':' . $this->password);
+    }
+    return $this->request(
+      $this->url,
+      [
+        'jsonrpc' => '2.0',
+        'method' => $method,
+        'params' => $params ?: null
+      ],
+      'POST',
+      $headers
+    );
   }
 }
