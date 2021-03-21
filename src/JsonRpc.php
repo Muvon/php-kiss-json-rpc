@@ -37,11 +37,9 @@ final class JsonRpc {
    * @return array [err, result]
    */
   public function call(string $method, array $params): array {
+    $headers = [];
     if ($this->user && $this->password) {
-      $params[0] = array_merge($params[0] ?? [], [
-        'username' => $this->user,
-        'password' => $this->password,
-      ]);
+      $headers[] = 'Authorization: Basic ' . base64_encode($this->user . ':' . $this->password);
     }
 
     [$err, $response] = $this->request(
@@ -51,7 +49,8 @@ final class JsonRpc {
         'method' => $method,
         'params' => $params ?: null
       ],
-      'POST'
+      'POST',
+      $headers
     );
 
     if ($err) {
