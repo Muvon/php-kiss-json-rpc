@@ -37,7 +37,7 @@ final class JsonRpc {
    * @param array $params
    * @return array [err, result]
    */
-  public function call(string $method, array $params): array {
+  public function call(string $method, array $params = []): array {
     [$err, $response] = $this->doRequest($method, $params);
 
     if ($err) {
