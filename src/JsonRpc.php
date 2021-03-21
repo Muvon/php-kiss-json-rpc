@@ -41,7 +41,7 @@ final class JsonRpc {
     [$err, $response] = $this->doRequest($method, $params);
 
     if ($err) {
-      return ['e_request_failed', null];
+      return [$err, $response];
     }
 
     // Check JSON rpc according to protocol
