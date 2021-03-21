@@ -6,6 +6,7 @@ use Closure;
 
 final class JsonRpc {
   use RequestTrait;
+  protected int $request_keepalive = 0;
   protected ?Closure $check_result_fn = null;
 
   final protected function __construct(protected string $url, protected ?string $user, protected ?string $password) {}
@@ -102,7 +103,9 @@ final class JsonRpc {
   }
 
   protected function doRequest(string $method, array $params): self|array {
-    $headers = [];
+    $headers = [
+      'Connection: close',
+    ];
     if ($this->user && $this->password) {
       $headers[] = 'Authorization: Basic ' . base64_encode($this->user . ':' . $this->password);
     }
