@@ -1,8 +1,8 @@
 <?php
 namespace Muvon\KISS;
 
+use Error;
 use Closure;
-use Exception;
 
 final class JsonRpc {
   use RequestTrait;
@@ -77,13 +77,13 @@ final class JsonRpc {
       $result = [];
       foreach ($this->exec() as $response) {
         if ($fn && ($err = $fn($response['result']))) {
-          throw new Exception('Result checkFn failed with error: ' . $err);
+          throw new Error('Result checkFn failed with error: ' . $err);
         }
         $result[] = $response['result'];
       }
 
       return [null, $result];
-    } catch (Exception $e) {
+    } catch (Error $e) {
       return ['e_request_failed', null];
     }
   }
