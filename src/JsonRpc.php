@@ -6,7 +6,6 @@ use Closure;
 
 final class JsonRpc {
   use RequestTrait;
-  protected int $request_keepalive = 0;
   protected ?Closure $check_result_fn = null;
 
   final protected function __construct(protected string $url, protected ?string $user, protected ?string $password) {}
@@ -15,7 +14,9 @@ final class JsonRpc {
    * @see self::__construct
    */
   public static function create(string $url, ?string $user, ?string $password): self {
-    return new self($url, $user, $password);
+    $Client = new self($url, $user, $password);
+    $Client->request_keepalive = 0;
+    return $Client;
   }
 
   /**
