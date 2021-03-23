@@ -49,7 +49,7 @@ This method do simple call to RPC with given method and params.
 It returns common structure as array: [error, result]. Where is error is string presentation of error or null and result is array of result or null or even mixed value in case of we has error and want to give more info about it we send it to result var.
 
 ```php
-[$err, $resut] $rpc->call('getblockcount');
+[$err, $result] = $rpc->call('getblockcount');
 ```
 
 ### callMulti(array $multi)
@@ -80,9 +80,9 @@ This method allows you to change available options before use of lib.
 
 Available options are:
 
-- **OPT_CONNECT_TIMEOUT** (int time to wait to connect to host)
-- OPT_TIMEOUT (int time to wait for response in connection)
-- OPT_SSL_VERIFY (int 0 skip verification as default or 1 check SSL cert)
+- **OPT_CONNECT_TIMEOUT** - int time to wait to connect to host
+- **OPT_TIMEOUT** - int time to wait for response in connection
+- **OPT_SSL_VERIFY** - int 0 skip verification as default or 1 check SSL cert
 
 ## Test coverage
 
