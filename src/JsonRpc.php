@@ -6,6 +6,11 @@ use Closure;
 
 final class JsonRpc {
   use RequestTrait;
+
+  const OPT_CONNECT_TIMEOUT = 'request_connect_timeout';
+  const OPT_TIMEOUT = 'request_timeout';
+  const OPT_SSL_VERIFY = 'request_ssl_verify';
+
   protected ?Closure $check_result_fn = null;
 
   final protected function __construct(protected string $url, protected ?string $user, protected ?string $password) {}
@@ -29,6 +34,11 @@ final class JsonRpc {
    */
   public function setCheckResultFn(Closure $fn): self {
     $this->check_result_fn = $fn;
+    return $this;
+  }
+
+  public function setOption(string $option, mixed $value): self {
+    $this->$option = $value;
     return $this;
   }
 
