@@ -24,13 +24,13 @@ final class JsonRpcTest extends TestCase {
       ['value', ['value' => uniqid()]],
       ['value', ['value' => uniqid()]],
     ];
-    [$err, $result] = $this->Client->callMulti($cmds);
-    $this->assertEquals(null, $err);
-    $this->assertIsArray($result);
-    $this->assertEquals(sizeof($cmds), sizeof($result));
-    foreach ($result as $k => $item) {
-      $this->assertArrayHasKey('value', $item);
-      $this->assertEquals($cmds[$k][1]['value'], $item['value']);
+    $results = $this->Client->callMulti($cmds);
+    $this->assertEquals(sizeof($cmds), sizeof($results));
+    foreach ($results as $k => [$err, $result]) {
+      $this->assertEquals(null, $err);
+      $this->assertIsArray($result);
+      $this->assertArrayHasKey('value', $result);
+      $this->assertEquals($cmds[$k][1]['value'], $result['value']);
     }
   }
 
