@@ -89,10 +89,10 @@ final class JsonRpc {
     $result = [];
     foreach ($this->exec() as [$err, $response]) {
       if ($fn && ($reserr = $fn($response['result']))) {
-        $result[] = [$reserr, $response];
+        $result[] = [$reserr, $response['result']];
         continue;
       }
-      $result[] = [$err, $response];
+      $result[] = [$err, $response['result']];
     }
 
     return $result;
