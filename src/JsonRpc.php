@@ -77,27 +77,25 @@ final class JsonRpc {
    * Do multiple request with async
    *
    * @param array $cmds list of commands that applyes to default call method
-   * @return array [err, result] where result is array of all data for all requests
+   * @return array list of struct [err, result] for each request perfromed
    */
   public function callMulti(array $cmds): array {
     $this->multi();
     foreach ($cmds as $cmd) {
       $this->doRequest(...$cmd);
     }
-    try {
-      $fn = $this->check_result_fn;
-      $result = [];
-      foreach ($this->exec() as $response) {
-        if ($fn && ($err = $fn($response['result']))) {
-          throw new Error('Result checkFn failed with error: ' . $err);
-        }
-        $result[] = $response['result'];
-      }
 
-      return [null, $result];
-    } catch (Error $e) {
-      return ['e_request_failed', null];
+    $fn = $this->check_result_fn;
+    $result = [];
+    foreach ($this->exec() as [$err, $response]) {
+      if ($fn && ($reserr = $fn($response['result']))) {
+        $result[] = [$reserr, $response];
+        continue;
+      }
+      $result[] = [$err, $response];
     }
+
+    return $result;
   }
 
   /**
