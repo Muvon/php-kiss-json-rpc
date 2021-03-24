@@ -19,7 +19,7 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "muvon/kiss-request-trait": "^0.2.5"
+    "muvon/kiss-request-trait": "^0.3.0"
   },
   "autoload": {
     "psr-4": {
