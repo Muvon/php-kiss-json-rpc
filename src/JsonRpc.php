@@ -78,11 +78,12 @@ final class JsonRpc {
 
     [$err, $responses] = $this->request(
       $this->url,
-      array_map(function (array $item, int $idx) {
+      array_map(function (array $item) {
+        static $id = 0;
         [$method, $params] = $item;
         return [
           'jsonrpc' => '2.0',
-          'id' => $idx,
+          'id' => $id++,
           'method' => $method,
           'params' => $params ?: null,
         ];
