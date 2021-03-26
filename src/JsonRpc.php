@@ -96,7 +96,7 @@ final class JsonRpc {
       return [[$err, $responses]];
     }
 
-    uasort($responses, function ($a, $b) {
+    usort($responses, function ($a, $b) {
       return $a['id'] < $b['id'] ? -1 : 1;
     });
 
