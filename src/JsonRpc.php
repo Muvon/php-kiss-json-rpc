@@ -11,8 +11,6 @@ final class JsonRpc {
   const OPT_TIMEOUT = 'request_timeout';
   const OPT_SSL_VERIFY = 'request_ssl_verify';
 
-  protected ?Closure $check_result_fn = null;
-
   final protected function __construct(protected string $url, protected ?string $user, protected ?string $password) {}
 
   /**
@@ -22,19 +20,6 @@ final class JsonRpc {
     $Client = new self($url, $user, $password);
     $Client->request_keepalive = 0;
     return $Client;
-  }
-
-  /**
-   * Optional set result checking in request
-   * This function set return null if no error occured and we process response
-   * Or error code as string in case if we have error and should return it by checkign result
-   *
-   * @param Closure $fn
-   * @return self
-   */
-  public function setCheckResultFn(Closure $fn): self {
-    $this->check_result_fn = $fn;
-    return $this;
   }
 
   public function setOption(string $option, mixed $value): self {
@@ -93,10 +78,11 @@ final class JsonRpc {
 
     [$err, $responses] = $this->request(
       $this->url,
-      array_map(function (array $item) {
+      array_map(function (array $item, int $idx) {
         [$method, $params] = $item;
         return [
           'jsonrpc' => '2.0',
+          'id' => $idx,
           'method' => $method,
           'params' => $params ?: null,
         ];
@@ -109,18 +95,14 @@ final class JsonRpc {
       return [[$err, $responses]];
     }
 
-    // Looks like PHP 8.0.3 has bug
-    // When we call property directly it use __call method and recursion
-    // So to workaround it we do reassign Closure and call it
-    $fn = $this->check_result_fn;
-    return array_map(function ($response) use ($fn) {
+    uasort($responses, function ($a, $b) {
+      return $a['id'] < $b['id'] ? -1 : 1;
+    });
+
+    return array_map(function ($response) {
       // Check JSON rpc according to protocol
       if (isset($response['error'])) {
-        return ['e_response_error', null];
-      }
-
-      if ($fn && ($err = $fn($response['result']))) {
-        return [$err, null];
+        return ['e_response_error', "{$response['error']['code']}: {$response['error']['message']}"];
       }
 
       return [null, $response['result']];
