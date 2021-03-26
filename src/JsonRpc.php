@@ -50,27 +50,8 @@ final class JsonRpc {
    * @return array [err, result]
    */
   public function call(string $method, array $params = []): array {
-    [$err, $response] = $this->doRequest($method, $params);
-
-    if ($err) {
-      return [$err, $response];
-    }
-
-    // Check JSON rpc according to protocol
-    if (isset($response['error'])) {
-      return ['e_response_error', null];
-    }
-
-    // Looks like PHP 8.0.3 has bug
-    // When we call property directly it use __call method and recursion
-    // So to workaround it we do reassign Closure and call it
-    $fn = $this->check_result_fn;
-    if ($fn && ($err = $fn($response['result']))) {
-      return [$err, null];
-    }
-
-    // Check up result also. Cuz for example some clients can return error in result
-    return [null, $response['result']];
+    [[$err, $result]] = $this->doRequest([[$method, $params]]);
+    return [$err, $result];
   }
 
   /**
@@ -80,19 +61,10 @@ final class JsonRpc {
    * @return array list of struct [err, result] for each request perfromed
    */
   public function callMulti(array $cmds): array {
-    $this->multi();
-    foreach ($cmds as $cmd) {
-      $this->doRequest(...$cmd);
-    }
-
-    $fn = $this->check_result_fn;
+    $responses = $this->doRequest($cmds);
     $result = [];
-    foreach ($this->exec() as [$err, $response]) {
-      if ($fn && !$err && ($reserr = $fn($response['result']))) {
-        $result[] = [$reserr, $response['result']];
-        continue;
-      }
-      $result[] = [$err, $err ? $response : $response['result']];
+    foreach ($responses as [$err, $response]) {
+      $result[] = [$err, $response ?: null];
     }
 
     return $result;
@@ -111,22 +83,47 @@ final class JsonRpc {
     return $this->call($name, $args);
   }
 
-  protected function doRequest(string $method, array $params): self|array {
+  protected function doRequest(array $cmds): array {
     $headers = [
       'Connection: close',
     ];
     if ($this->user && $this->password) {
       $headers[] = 'Authorization: Basic ' . base64_encode($this->user . ':' . $this->password);
     }
-    return $this->request(
+
+    [$err, $responses] = $this->request(
       $this->url,
-      [
-        'jsonrpc' => '2.0',
-        'method' => $method,
-        'params' => $params ?: null
-      ],
+      array_map(function (array $item) {
+        [$method, $params] = $item;
+        return [
+          'jsonrpc' => '2.0',
+          'method' => $method,
+          'params' => $params ?: null,
+        ];
+      }, $cmds),
       'POST',
       $headers
     );
+
+    if ($err) {
+      return [[$err, $responses]];
+    }
+
+    // Looks like PHP 8.0.3 has bug
+    // When we call property directly it use __call method and recursion
+    // So to workaround it we do reassign Closure and call it
+    $fn = $this->check_result_fn;
+    return array_map(function ($response) use ($fn) {
+      // Check JSON rpc according to protocol
+      if (isset($response['error'])) {
+        return ['e_response_error', null];
+      }
+
+      if ($fn && ($err = $fn($response['result']))) {
+        return [$err, null];
+      }
+
+      return [null, $response['result']];
+    }, $responses);
   }
 }
