@@ -19,6 +19,7 @@ final class JsonRpc {
   public static function create(string $url, ?string $user, ?string $password): self {
     $Client = new self($url, $user, $password);
     $Client->request_keepalive = 0;
+    $Client->request_type = 'json';
     return $Client;
   }
 

@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9e544a2fc2c90619e4108712fcce6790",
+    "content-hash": "318e38d03f119f7e11c472411dcbf5d5",
     "packages": [
         {
             "name": "muvon/kiss-request-trait",
-            "version": "0.3.0",
+            "version": "0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Muvon/php-kiss-request-trait.git",
-                "reference": "57a3ba083a7a2c03448a61537abcbc9d00b30d2a"
+                "reference": "b1de2c76072a37f2753c302ceb33792d37855286"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Muvon/php-kiss-request-trait/zipball/57a3ba083a7a2c03448a61537abcbc9d00b30d2a",
-                "reference": "57a3ba083a7a2c03448a61537abcbc9d00b30d2a",
+                "url": "https://api.github.com/repos/Muvon/php-kiss-request-trait/zipball/b1de2c76072a37f2753c302ceb33792d37855286",
+                "reference": "b1de2c76072a37f2753c302ceb33792d37855286",
                 "shasum": ""
             },
             "require-dev": {
@@ -50,9 +50,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Muvon/php-kiss-request-trait/issues",
-                "source": "https://github.com/Muvon/php-kiss-request-trait/tree/0.3.0"
+                "source": "https://github.com/Muvon/php-kiss-request-trait/tree/0.4.0"
             },
-            "time": "2021-03-24T14:33:39+00:00"
+            "time": "2021-03-28T11:15:36+00:00"
         }
     ],
     "packages-dev": [
